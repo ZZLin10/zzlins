@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>周紫林的个人作品集</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: "Helvetica Neue", "PingFang SC", "Microsoft Yahei", Arial,
+          sans-serif;
+        background-color: #0e0e0e;
+        color: #f5f5f5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        line-height: 1.6;
+        background: #050505;
+      }
+
+      header.hero {
+        position: relative;
+        min-height: 70vh;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        isolation: isolate;
+        text-align: center;
+      }
+
+      header.hero img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.55);
+        z-index: -3;
+      }
+
+      header.hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle,
+          rgba(0, 0, 0, 0) 10%,
+          rgba(0, 0, 0, 0.7) 70%
+        );
+        z-index: -2;
+      }
+
+      header.hero::after {
+        content: "";
+        position: absolute;
+        inset: -5%;
+        background: radial-gradient(
+          circle at 50% 55%,
+          rgba(255, 255, 255, 0.2),
+          rgba(255, 255, 255, 0.05) 35%,
+          rgba(0, 0, 0, 0) 70%
+        );
+        z-index: -1;
+        mix-blend-mode: screen;
+        filter: blur(10px);
+        opacity: 0.65;
+        pointer-events: none;
+      }
+
+      .hero__content {
+        padding: 2rem;
+      }
+
+      .hero__title {
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.2rem;
+        text-transform: uppercase;
+      }
+
+      .hero__subtitle {
+        font-size: clamp(1.1rem, 2vw, 1.4rem);
+        color: #d1d1d1;
+      }
+      .hero__tagline {
+        margin-top: clamp(9rem, 35vh, 30rem);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(1rem, 2.8vw, 2.25rem);
+        flex-wrap: wrap;
+        padding: 0.45rem 2rem;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.25);
+        box-shadow: 0 0 25px rgba(255, 255, 255, 0.25),
+          0 0 40px rgba(159, 175, 255, 0.2);
+        text-shadow: 0 0 12px rgba(255, 255, 255, 0.9),
+          0 0 18px rgba(111, 147, 255, 0.6);
+        backdrop-filter: blur(8px);
+      }
+
+      .hero__tagline span {
+        position: relative;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+      }
+
+      .hero__tagline span + span::before {
+        content: "·";
+        margin-right: clamp(0.8rem, 1.5vw, 1.25rem);
+        color: rgba(255, 255, 255, 0.65);
+      }
+
+      main {
+        padding: clamp(1.5rem, 4vw, 3rem);
+        max-width: 1400px;
+        margin: 0 auto 4rem;
+      }
+
+      .collection {
+        margin-top: clamp(2rem, 5vw, 4rem);
+      }
+
+      .collection__header {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 0.5rem;
+      }
+
+      .collection__header h2 {
+        margin: 0;
+        font-size: clamp(1.5rem, 3vw, 2.25rem);
+      }
+
+      .collection__header span {
+        color: #9f9f9f;
+        font-size: 0.95rem;
+        letter-spacing: 0.1rem;
+      }
+
+      .collection__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+      }
+
+      figure {
+        margin: 0;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        transition: transform 0.3s ease, border-color 0.3s ease;
+      }
+
+      figure:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+
+      figure::before {
+        content: "";
+        display: block;
+        padding-bottom: 70%;
+      }
+
+      figure img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      figure {
+        position: relative;
+      }
+
+      .lightbox {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+        z-index: 1000;
+      }
+
+      .lightbox.is-visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .lightbox__img {
+        max-width: min(90vw, 1200px);
+        max-height: 90vh;
+        border-radius: 14px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+        object-fit: contain;
+      }
+
+      .lightbox__close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        border: none;
+        font-size: 1.5rem;
+        line-height: 1;
+        padding: 0.4rem 0.8rem;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 600px) {
+        header.hero {
+          min-height: 60vh;
+        }
+
+        .collection__header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .hero__title {
+          letter-spacing: 0.1rem;
+        }
+
+        .hero__tagline {
+          margin-top: clamp(3rem, 18vh, 8rem);
+          padding: 0.3rem 1.4rem;
+          gap: 0.9rem;
+        }
+
+        .hero__tagline span + span::before {
+          margin-right: 0.5rem;
+        }
+
+        .collection__grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 0.75rem;
+        }
+
+        figure::before {
+          padding-bottom: 100%;
+        }
+
+        main {
+          padding: 1.25rem;
+        }
+
+        .lightbox__img {
+          max-width: 95vw;
+          max-height: 80vh;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="hero">
+      <img src="img2/fengmain1.jpg" alt="作品集封面" />
+      <div class="hero__content">
+        <!-- <p class="hero__subtitle">Visual Portfolio</p> -->
+        <!-- <h1 class="hero__title">Personal Works</h1> -->
+        <p class="hero__subtitle hero__tagline" aria-label="包装 插画 海报 IP 品牌">
+          <span>包装</span>
+          <span>插画</span>
+          <span>海报</span>
+          <span>IP</span>
+          <span>品牌</span>
+        </p>
+      </div>
+    </header>
+
+    <main id="gallery"></main>
+
+    <div class="lightbox" id="lightbox" aria-hidden="true">
+      <button class="lightbox__close" id="lightboxClose" aria-label="关闭预览">
+        ×
+      </button>
+      <img class="lightbox__img" id="lightboxImg" alt="放大预览" />
+    </div>
+
+    <script>
+      const collections = [
+        {
+          id: "bz",
+          title: "包装设计 · Packaging",
+          path: "bz",
+          files: [
+            "cat-1.jpg",
+            "cat-2.jpg",
+            "cat-3.jpg",
+            "cat-4.jpg",
+            "cat-5.jpg",
+            "cat-6.jpg",
+            "cat-7.jpg",
+            "cat-8.jpg",
+            "cat-9.jpg",
+            "cat-10.jpg",
+            "cat-11.jpg",
+            "cat-12.jpg",
+            "cat-13.jpg",
+            "cat-14.jpg",
+            "cat-15.jpg",
+            "cat-16.jpg",
+            "cat-17.jpg",
+            "cat-18.jpg",
+            "cat-20.jpg",
+            "cat-21.jpg",
+            "cat-22.jpg",
+            "cat-23.jpg"
+          ]
+        },
+        {
+          id: "chahua",
+          title: "插画 · Illustration",
+          path: "chahua",
+          files: [
+            "chahua1.png",
+            "chahua2.png",
+            "chahua3.jpg",
+            "chahua4.png",
+            "chahua5.jpg",
+            "chahua6.png",
+            "chahua7.jpg",
+            "chahua8.png",
+            "chahua9.png",
+            "chahua10.png",
+            "chahua11.jpg",
+            "chahua12.jpg",
+            "chahua13.jpg",
+            "chahua14.jpg",
+            "chahua15.jpg",
+            "chahua16.png",
+            "chahua17.png"
+          ]
+        },
+        {
+          id: "hb",
+          title: "海报 · Poster",
+          path: "hb",
+          files: [
+            "1.png",
+            "2.png",
+            "3.png",
+            "4.png",
+            "5.png",
+            "6.png",
+            "7.png",
+            "08.png",
+            "09.png",
+            "10.png",
+            "11.png",
+            "12.png",
+            "13.png",
+            "14.png",
+            "15.png",
+            "16.png",
+            "17.png",
+            "18.png",
+            "19.png",
+            "20.png",
+            "21.png",
+            "22.png",
+            "23.png"
+          ]
+        },
+        {
+          id: "ip",
+          title: "IP 形象",
+          path: "ip",
+          files: [
+            "xiaodui1.jpg",
+            "xiaodui2.jpg",
+            "xiaodui3.jpg",
+            "xiaodui4.jpg",
+            "xiaodui5.jpg",
+            "xiaodui6.jpg",
+            "zhizhi1.jpg",
+            "zhizhi2.jpg",
+            "zhizhi3.jpg",
+            "zhizhi4.jpg",
+            "zhizhi5.jpg",
+            "zhizhi6.jpg",
+            "zhizhi7.jpg",
+            "zhizhi8.jpg",
+            "zhizhi9.jpg",
+            "zhizhi10.jpg",
+            "zhizhi11.jpg",
+            "zhizhi12.jpg",
+            "zhizhi13.jpg",
+            "zhizhi14.jpg",
+            "zhizhi15.jpg",
+            "zhizhi16.jpg",
+            "zhizhi17.jpg",
+            "zhizhi18.jpg",
+            "zhizhi19.jpg",
+            "zhizhi20.jpg",
+            "zhizhi21.jpg",
+            "zhizhi22.jpg",
+            "zhizhi23.jpg"
+          ]
+        },
+        {
+          id: "pp",
+          title: "品牌 · Brand",
+          path: "pp",
+          files: [
+            "dj-1.jpg",
+            "dj-2.jpg",
+            "dj-3.jpg",
+            "dj-4.jpg",
+            "dj-5.jpg",
+            "dj-6.jpg",
+            "dj-7.jpg",
+            "dj-8.jpg",
+            "dj-9.jpg",
+            "dj-10.jpg",
+            "dj-11.jpg",
+            "dj-12.jpg",
+            "dj-13.jpg",
+            "dj-14.jpg",
+            "dj-15.jpg",
+            "dj-16.jpg",
+            "dj-17.jpg",
+            "maoniu-03.jpg",
+            "maoniu-04.jpg",
+            "maoniu-05.jpg",
+            "maoniu-06.jpg",
+            "maoniu-07.jpg",
+            "maoniu-08.jpg",
+            "maoniu-09.jpg",
+            "maoniu-10.jpg",
+            "maoniu-11.jpg",
+            "maoniu-12.jpg",
+            "maoniu-13.jpg",
+            "maoniu-14.jpg",
+            "maoniu-15.jpg",
+            "maoniu-16.jpg"
+          ]
+        },
+        {
+          id: "gz",
+          title: "工作相关 · work",
+          path: "gz",
+          files: [
+            "01.jpg",
+            "02.jpg",
+            "03.jpg",
+            "04.jpg",
+            "05.jpg",
+            "06.png",
+            "07.png",
+            "08.png",
+            "09.png"
+          ]
+        }
+      ];
+
+      const gallery = document.getElementById("gallery");
+
+      collections.forEach(({ id, title, path, files }) => {
+        const section = document.createElement("section");
+        section.className = "collection";
+        section.id = id;
+
+        section.innerHTML = `
+          <div class="collection__header">
+            <h2>${title}</h2>
+            <span>${files.length} 张作品</span>
+          </div>
+        `;
+
+        const grid = document.createElement("div");
+        grid.className = "collection__grid";
+
+        files.forEach((file) => {
+          const figure = document.createElement("figure");
+          const img = document.createElement("img");
+          img.loading = "lazy";
+          img.src = `${path}/${file}`;
+          img.alt = `${title} - ${file}`;
+          img.dataset.full = img.src;
+          figure.appendChild(img);
+          grid.appendChild(figure);
+        });
+
+        section.appendChild(grid);
+        gallery.appendChild(section);
+      });
+
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImg = document.getElementById("lightboxImg");
+      const lightboxClose = document.getElementById("lightboxClose");
+
+      const openLightbox = (src, alt) => {
+        lightboxImg.src = src;
+        lightboxImg.alt = alt;
+        lightbox.classList.add("is-visible");
+        lightbox.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      };
+
+      const closeLightbox = () => {
+        lightbox.classList.remove("is-visible");
+        lightbox.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+        lightboxImg.src = "";
+      };
+
+      gallery.addEventListener("click", (event) => {
+        const target = event.target;
+        if (target.tagName === "IMG" && target.dataset.full) {
+          openLightbox(target.dataset.full, target.alt);
+        }
+      });
+
+      lightbox.addEventListener("click", (event) => {
+        if (
+          event.target === lightbox ||
+          event.target === lightboxImg ||
+          event.target === lightboxClose
+        ) {
+          closeLightbox();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && lightbox.classList.contains("is-visible")) {
+          closeLightbox();
+        }
+      });
+    </script>
+  </body>
+</html>
+
